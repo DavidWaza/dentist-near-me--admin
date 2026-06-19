@@ -17,7 +17,7 @@ export default async function AdminLayout({
         <p className="text-sm">
           The admin dashboard needs Supabase credentials. Copy{" "}
           <code>.env.example</code> to <code>.env.local</code>, set{" "}
-          <code>NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+          <code>NEXT_PUBLIC_SUPABASE_URL_ADMIN</code> and{" "}
           <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>, then restart.
         </p>
       </main>

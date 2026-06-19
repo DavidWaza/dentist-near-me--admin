@@ -29,7 +29,7 @@ export async function signIn(
   if (!isSupabaseConfigured) {
     return {
       error:
-        "Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and " +
+        "Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL_ADMIN and " +
         "NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local, then restart.",
     };
   }

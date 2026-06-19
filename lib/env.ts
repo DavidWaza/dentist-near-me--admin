@@ -4,7 +4,7 @@
  * configured" state) instead of crashing the whole module graph at import time.
  */
 
-export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL_ADMIN ?? "";
 export const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
 /** True only when both public Supabase values are present. */
@@ -58,7 +58,7 @@ export const CLINIC_NOTIFY_EMAIL =
 export function assertSupabaseEnv(): void {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     throw new Error(
-      "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and " +
+      "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL_ADMIN and " +
         "NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local (see .env.example).",
     );
   }

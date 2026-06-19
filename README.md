@@ -24,7 +24,7 @@ Open http://localhost:3000 → **Go to staff console** → `/admin/login`.
 
 | Var | Required | Purpose |
 |-----|----------|---------|
-| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_URL_ADMIN` | ✅ | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase **anon** key (never the service-role key) |
 | `RESEND_API_KEY` | ➖ | Resend key. If unset, emails are logged to the console instead of sent. |
 | `RESEND_FROM_EMAIL` or `EMAIL_FROM` | ➖ | Verified sender, e.g. `DentistNearMe <appts@clinic.com>` |
