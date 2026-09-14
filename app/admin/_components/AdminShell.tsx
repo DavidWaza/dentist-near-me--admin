@@ -89,9 +89,7 @@ export function AdminShell({
           )}
         </div>
 
-        <div
-          className={`shrink-0 py-3 ${collapsed ? "px-2" : "px-3"}`}
-        >
+        <div className={`shrink-0 py-3 ${collapsed ? "px-2" : "px-3"}`}>
           <SidebarNav collapsed={collapsed} />
         </div>
 
@@ -123,44 +121,46 @@ export function AdminShell({
           collapsed ? "md:ml-[4.25rem]" : "md:ml-60"
         }`}
       >
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-mint bg-cream/95 px-4 py-3 backdrop-blur md:px-6">
-          <div className="flex min-w-0 items-center gap-2">
-            <button
-              type="button"
-              onClick={toggle}
-              className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-mint text-ink transition-colors hover:bg-mint/40 md:flex"
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              aria-expanded={!collapsed}
-              aria-controls="admin-sidebar-nav"
-            >
-              <CollapseIcon collapsed={collapsed} />
-            </button>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-deep md:hidden">
-                DentistNearMe
-              </p>
-              <p
-                className={`truncate text-xs text-ink/60 ${
-                  ready ? "hidden md:block" : "hidden"
-                }`}
+        <header className="sticky top-0 z-30 border-b border-mint bg-cream/95 px-4 py-3 backdrop-blur md:px-6">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={toggle}
+                className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-mint text-ink transition-colors hover:bg-mint/40 md:flex"
+                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                aria-expanded={!collapsed}
+                aria-controls="admin-sidebar-nav"
               >
-                All times shown in {timezoneLabel}
-              </p>
+                <CollapseIcon collapsed={collapsed} />
+              </button>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-deep md:hidden">
+                  DentistNearMe
+                </p>
+                <p
+                  className={`truncate text-xs text-ink/60 ${
+                    ready ? "hidden md:block" : "hidden"
+                  }`}
+                >
+                  All times shown in {timezoneLabel}
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span
-              className="max-w-[14rem] truncate text-sm text-ink/80 md:hidden"
-              title={userEmail ?? undefined}
-            >
-              {userEmail}
-            </span>
-            <SignOutButton />
+            <div className="flex items-center gap-3">
+              <span
+                className="max-w-[14rem] truncate text-sm text-ink/80 md:hidden"
+                title={userEmail ?? undefined}
+              >
+                {userEmail}
+              </span>
+              <SignOutButton />
+            </div>
           </div>
         </header>
 
         <main className="flex-1 px-4 pb-24 pt-5 md:px-6 md:pb-8">
-          {children}
+          <div className="mx-auto w-full max-w-7xl">{children}</div>
         </main>
       </div>
 
