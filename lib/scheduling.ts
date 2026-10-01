@@ -6,6 +6,9 @@ import { CLINIC_TIMEZONE } from "@/lib/env";
  * v1.1 enhancement. All persisted timestamps are UTC (timestamptz); these
  * helpers convert to/from the clinic wall-clock for display and for the
  * reschedule <input type="datetime-local">.
+ *
+ * Display formatting lives in lib/utils/date-formatters.ts — this module only
+ * converts between UTC instants and clinic wall-clock values.
  */
 
 const tz = CLINIC_TIMEZONE;
@@ -65,55 +68,6 @@ export function utcISOToClinicWallInput(iso: string): string {
   const parts = dtf.formatToParts(date);
   const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
   return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}`;
-}
-
-const dateFmt = new Intl.DateTimeFormat("en-US", {
-  timeZone: tz,
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-});
-
-const timeFmt = new Intl.DateTimeFormat("en-US", {
-  timeZone: tz,
-  hour: "numeric",
-  minute: "2-digit",
-});
-
-const dateTimeFmt = new Intl.DateTimeFormat("en-US", {
-  timeZone: tz,
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-});
-
-export function formatDate(iso: string): string {
-  return dateFmt.format(new Date(iso));
-}
-
-export function formatTime(iso: string): string {
-  return timeFmt.format(new Date(iso));
-}
-
-export function formatDateTime(iso: string): string {
-  return `${dateTimeFmt.format(new Date(iso))} (${tzAbbrev(iso)})`;
-}
-
-/** "9:00 – 9:30 AM"-style range for same-day start/end. */
-export function formatTimeRange(startISO: string, endISO: string): string {
-  return `${timeFmt.format(new Date(startISO))} – ${timeFmt.format(new Date(endISO))}`;
-}
-
-/** Short timezone label (e.g. "EDT") for the configured clinic zone. */
-export function tzAbbrev(iso: string): string {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: tz,
-    timeZoneName: "short",
-  }).formatToParts(new Date(iso));
-  return parts.find((p) => p.type === "timeZoneName")?.value ?? "";
 }
 
 /** Whole-day key ("YYYY-MM-DD") in the clinic zone — used for grouping/filters. */

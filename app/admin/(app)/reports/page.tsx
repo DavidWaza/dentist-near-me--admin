@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ReportsDashboard } from "../../_components/ReportsDashboard";
+import { NClientOnly } from "@/components/n";
+import { RpDashboard } from "@/features/reports/dashboard/ui/rp-dashboard";
+import { RpDashboardSkeleton } from "@/features/reports/dashboard/ui/rp-dashboard/skeleton";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Reports · Staff console" };
 
+/** The dashboard is fed by client-resolved queries → client-only, owned here. */
 export default function ReportsPage() {
+  const fallback = <RpDashboardSkeleton />;
   return (
-    <Suspense
-      fallback={
-        <div className="space-y-5">
-          <div className="h-8 w-48 animate-pulse rounded bg-mint/60" />
-          <div className="h-32 animate-pulse rounded-xl border border-mint bg-white" />
-        </div>
-      }
-    >
-      <ReportsDashboard />
-    </Suspense>
+    <NClientOnly fallback={fallback}>
+      <Suspense fallback={fallback}>
+        <RpDashboard />
+      </Suspense>
+    </NClientOnly>
   );
 }

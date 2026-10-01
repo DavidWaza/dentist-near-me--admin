@@ -2,6 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import {
+  NButton,
+  NCard,
+  NDescriptionDetails,
+  NDescriptionItem,
+  NDescriptionList,
+  NDescriptionTerm,
+  NFieldError,
+  NIcon,
+} from "@/components/n";
 
 interface Details {
   service: string;
@@ -10,15 +20,6 @@ interface Details {
   whenLong: string;
   whenRange: string;
   dateLine: string;
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between gap-4 border-b border-mint/60 py-2 last:border-0">
-      <dt className="text-ink/55">{label}</dt>
-      <dd className="text-right font-medium text-ink">{value}</dd>
-    </div>
-  );
 }
 
 export function ConfirmCard({
@@ -56,54 +57,61 @@ export function ConfirmCard({
 
   if (done) {
     return (
-      <div className="rounded-2xl border border-mint bg-white p-6 shadow-sm">
-        <h1 className="text-xl font-bold text-deep">You’re all set ✓</h1>
-        <p className="mt-2 text-sm text-ink/70">
+      <NCard className="items-start px-6 py-6 shadow-sm">
+        <span className="inline-flex size-11 items-center justify-center rounded-full bg-green-100 text-green-500">
+          <NIcon name="complete" weight="fill" className="size-6" />
+        </span>
+        <h1 className="text-xl font-bold text-base-900">You’re all set</h1>
+        <p className="text-sm text-base-600">
           Thanks, {patientName}. Your appointment is confirmed for{" "}
-          <strong>{details.whenLong}</strong>. We’ve emailed you a confirmation.
+          <strong className="text-base-900">{details.whenLong}</strong>. We’ve emailed
+          you a confirmation.
         </p>
-      </div>
+      </NCard>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-mint bg-white p-6 shadow-sm">
-      <h1 className="text-xl font-bold text-deep">
-        Does this new time work, {patientName}?
-      </h1>
-      <p className="mt-1 text-sm text-ink/60">
-        Your appointment was rescheduled. Please confirm the new time below.
-      </p>
-
-      <dl className="mt-4 rounded-xl bg-cream px-4 py-2 text-sm">
-        <Row label="When" value={details.dateLine} />
-        <Row label="Service" value={details.service} />
-        <Row label="Dentist" value={details.dentist} />
-        <Row label="Location" value={details.location} />
-      </dl>
-
-      {error ? (
-        <p role="alert" className="mt-4 text-sm text-status-no_show">
-          {error}
+    <NCard className="px-6 py-6 shadow-sm">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-bold text-base-900">
+          Does this new time work, {patientName}?
+        </h1>
+        <p className="text-sm text-base-500">
+          Your appointment was rescheduled. Please confirm the new time below.
         </p>
-      ) : null}
-
-      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-        <button
-          type="button"
-          onClick={confirm}
-          disabled={busy}
-          className="rounded-xl bg-deep px-5 py-3 text-sm font-semibold text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {busy ? "Confirming…" : "Yes, this time works"}
-        </button>
-        <Link
-          href={`/appointment/${token}/reschedule`}
-          className="rounded-xl border border-mint px-5 py-3 text-center text-sm font-semibold text-deep transition-colors hover:bg-mint/40"
-        >
-          Pick another time
-        </Link>
       </div>
-    </div>
+
+      <NDescriptionList layout="rows" className="rounded-xl bg-base-50 px-4 py-1">
+        <NDescriptionItem>
+          <NDescriptionTerm>When</NDescriptionTerm>
+          <NDescriptionDetails>{details.dateLine}</NDescriptionDetails>
+        </NDescriptionItem>
+        <NDescriptionItem>
+          <NDescriptionTerm>Service</NDescriptionTerm>
+          <NDescriptionDetails>{details.service}</NDescriptionDetails>
+        </NDescriptionItem>
+        <NDescriptionItem>
+          <NDescriptionTerm>Dentist</NDescriptionTerm>
+          <NDescriptionDetails>{details.dentist}</NDescriptionDetails>
+        </NDescriptionItem>
+        <NDescriptionItem>
+          <NDescriptionTerm>Location</NDescriptionTerm>
+          <NDescriptionDetails>{details.location}</NDescriptionDetails>
+        </NDescriptionItem>
+      </NDescriptionList>
+
+      {error ? <NFieldError>{error}</NFieldError> : null}
+
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <NButton size="lg" onClick={confirm} disabled={busy}>
+          <NIcon name="complete" />
+          {busy ? "Confirming…" : "Yes, this time works"}
+        </NButton>
+        <NButton asChild size="lg" color="secondary" variant="outline">
+          <Link href={`/appointment/${token}/reschedule`}>Pick another time</Link>
+        </NButton>
+      </div>
+    </NCard>
   );
 }

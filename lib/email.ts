@@ -9,7 +9,7 @@ import {
   SITE_URL,
 } from "@/lib/env";
 import type { Appointment, PatientResponse } from "@/lib/types";
-import { formatDateTime, formatTimeRange } from "@/lib/scheduling";
+import { formatDateTime, formatTimeRange } from "@/lib/utils/date-formatters";
 
 /**
  * Resend wrapper for status-change notifications.

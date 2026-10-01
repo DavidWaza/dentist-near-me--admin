@@ -1,0 +1,77 @@
+import type { Icon } from "@phosphor-icons/react";
+import {
+  ArrowClockwise,
+  ArrowCounterClockwise,
+  ArrowLeft,
+  ArrowRight,
+  CalendarBlank,
+  CalendarCheck,
+  CaretLeft,
+  CaretRight,
+  CaretUpDown,
+  ChartBar,
+  CheckCircle,
+  Clock,
+  ClockCounterClockwise,
+  EnvelopeSimple,
+  GearSix,
+  HourglassHigh,
+  Info,
+  MagnifyingGlass,
+  MapPin,
+  Phone,
+  SignOut,
+  SortAscending,
+  SortDescending,
+  Tooth,
+  User,
+  UserCheck,
+  Warning,
+  WarningCircle,
+  X,
+  XCircle,
+} from "@phosphor-icons/react/ssr";
+
+/**
+ * Semantic name → Phosphor component. Templates say `icon="pending"`, never
+ * import `PhHourglassHigh`; renaming the underlying glyph is one entry here.
+ * The `/ssr` build works in both Server and Client Components.
+ */
+export const ICONS = {
+  appointments: CalendarBlank,
+  waitlist: Clock,
+  reports: ChartBar,
+  settings: GearSix,
+  signOut: SignOut,
+  brand: Tooth,
+  collapse: CaretLeft,
+  back: ArrowLeft,
+  forward: ArrowRight,
+  prev: CaretLeft,
+  next: CaretRight,
+  refresh: ArrowClockwise,
+  search: MagnifyingGlass,
+  close: X,
+  sortNone: CaretUpDown,
+  sortAsc: SortAscending,
+  sortDesc: SortDescending,
+  email: EnvelopeSimple,
+  phone: Phone,
+  location: MapPin,
+  user: User,
+  info: Info,
+  warning: Warning,
+  error: WarningCircle,
+  // status glyphs
+  pending: HourglassHigh,
+  confirmed: CalendarCheck,
+  rescheduled: ClockCounterClockwise,
+  complete: CheckCircle,
+  cancelled: XCircle,
+  noShow: WarningCircle,
+  reopen: ArrowCounterClockwise,
+  patientConfirmed: UserCheck,
+  returning: UserCheck,
+} satisfies Record<string, Icon>;
+
+export type IconName = keyof typeof ICONS;

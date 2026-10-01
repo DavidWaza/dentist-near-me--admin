@@ -6,7 +6,8 @@ import {
   isUuid,
   openSlotsForToken,
 } from "@/lib/public-appointments";
-import { clinicDayKey, formatDate, formatDateTime, formatTime } from "@/lib/scheduling";
+import { clinicDayKey } from "@/lib/scheduling";
+import { formatDate, formatDateTime, formatTime } from "@/lib/utils/date-formatters";
 import { prettifySlug } from "@/lib/format";
 
 export const runtime = "nodejs";

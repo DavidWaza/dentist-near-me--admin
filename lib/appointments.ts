@@ -1,4 +1,10 @@
-import type { AppointmentStatus } from "@/lib/types";
+import type { Appointment, AppointmentStatus } from "@/lib/types";
+import type { IconName } from "@/lib/utils/icons";
+import {
+  APPOINTMENT_STATUSES,
+  resolveStatus,
+  type ResponseStatusKey,
+} from "@/lib/utils/status";
 
 /**
  * Status lifecycle, allowed transitions, and presentation metadata.
@@ -15,9 +21,15 @@ export type ActionKey =
   | "no_show"
   | "reopen";
 
-interface ActionDef {
+export interface ActionDef {
   key: ActionKey;
+  /** Button label. */
   label: string;
+  /** Dialog title / confirmation heading. */
+  title: string;
+  icon: IconName;
+  /** Runs on click without a dialog (no extra input, not destructive). */
+  direct: boolean;
   /** Status the appointment moves to. */
   to: AppointmentStatus | null;
   /** Destructive actions require an explicit confirm step (PRD §12). */
@@ -33,6 +45,9 @@ interface ActionDef {
 export const ACTIONS: Record<ActionKey, ActionDef> = {
   confirm: {
     key: "confirm",
+    title: "Confirm booking",
+    icon: "confirmed",
+    direct: true,
     label: "Confirm booking",
     to: "confirmed",
     destructive: false,
@@ -42,6 +57,9 @@ export const ACTIONS: Record<ActionKey, ActionDef> = {
   },
   reschedule: {
     key: "reschedule",
+    title: "Reschedule appointment",
+    icon: "rescheduled",
+    direct: false,
     label: "Reschedule",
     to: "rescheduled",
     destructive: false,
@@ -51,6 +69,9 @@ export const ACTIONS: Record<ActionKey, ActionDef> = {
   },
   cancel: {
     key: "cancel",
+    title: "Cancel appointment",
+    icon: "cancelled",
+    direct: false,
     label: "Cancel",
     to: "cancelled",
     destructive: true,
@@ -60,6 +81,9 @@ export const ACTIONS: Record<ActionKey, ActionDef> = {
   },
   complete: {
     key: "complete",
+    title: "Mark completed",
+    icon: "complete",
+    direct: true,
     label: "Mark completed",
     to: "completed",
     destructive: false,
@@ -69,6 +93,9 @@ export const ACTIONS: Record<ActionKey, ActionDef> = {
   },
   no_show: {
     key: "no_show",
+    title: "Mark as no-show",
+    icon: "noShow",
+    direct: false,
     label: "Mark no-show",
     to: "no_show",
     destructive: true,
@@ -78,6 +105,9 @@ export const ACTIONS: Record<ActionKey, ActionDef> = {
   },
   reopen: {
     key: "reopen",
+    title: "Reopen appointment",
+    icon: "reopen",
+    direct: false,
     label: "Reopen",
     to: "pending",
     destructive: false,
@@ -113,49 +143,27 @@ export function resultingStatus(action: ActionKey): AppointmentStatus | null {
   return ACTIONS[action].to;
 }
 
-// ── Presentation ────────────────────────────────────────────────────────────
+// ── Shared read helpers ─────────────────────────────────────────────────────
 
-export interface StatusMeta {
-  label: string;
-  /** Tailwind classes for the badge (text + bg use the brand status tokens). */
-  badge: string;
+export const ALL_STATUSES: AppointmentStatus[] = [...APPOINTMENT_STATUSES];
+
+/**
+ * The patient's side of a reschedule, as a canonical response status (or null
+ * when there is nothing to show). Shared by the queue and the detail screen.
+ */
+export function deriveResponseStatus(
+  appt: Pick<
+    Appointment,
+    "status" | "patient_response" | "confirmation_token"
+  >,
+): ResponseStatusKey | null {
+  const answered = resolveStatus(appt.patient_response, "response");
+  if (answered) return answered;
+  if (appt.status === "rescheduled" && appt.confirmation_token) {
+    return "awaiting_patient";
+  }
+  return null;
 }
-
-export const STATUS_META: Record<AppointmentStatus, StatusMeta> = {
-  pending: {
-    label: "Pending",
-    badge: "text-status-pending bg-status-pending-bg",
-  },
-  confirmed: {
-    label: "Confirmed",
-    badge: "text-status-confirmed bg-status-confirmed-bg",
-  },
-  rescheduled: {
-    label: "Rescheduled",
-    badge: "text-status-rescheduled bg-status-rescheduled-bg",
-  },
-  completed: {
-    label: "Completed",
-    badge: "text-status-completed bg-status-completed-bg",
-  },
-  cancelled: {
-    label: "Cancelled",
-    badge: "text-status-cancelled bg-status-cancelled-bg",
-  },
-  no_show: {
-    label: "No-show",
-    badge: "text-status-no_show bg-status-no_show-bg",
-  },
-};
-
-export const ALL_STATUSES: AppointmentStatus[] = [
-  "pending",
-  "confirmed",
-  "rescheduled",
-  "completed",
-  "cancelled",
-  "no_show",
-];
 
 /**
  * Append a structured audit line to staff_notes (PRD §7.2 audit).

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { createPublicClient } from "@/lib/supabase/server";
 import { getPublicAppointment, isActionable, isUuid } from "@/lib/public-appointments";
-import { formatDate, formatDateTime, formatTimeRange } from "@/lib/scheduling";
+import { formatDate, formatDateTime, formatTimeRange } from "@/lib/utils/date-formatters";
 import { prettifySlug } from "@/lib/format";
 import type { PublicAppointment } from "@/lib/public-appointments";
+import { NCard } from "@/components/n";
 import { ConfirmCard } from "./ConfirmCard";
 
 export const dynamic = "force-dynamic";
@@ -20,10 +21,10 @@ function Notice({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-mint bg-white p-6 shadow-sm">
-      <h1 className="text-xl font-bold text-deep">{title}</h1>
-      {children ? <div className="mt-2 text-sm text-ink/70">{children}</div> : null}
-    </div>
+    <NCard className="px-6 py-6 shadow-sm">
+      <h1 className="text-xl font-bold text-base-900">{title}</h1>
+      {children ? <div className="text-sm text-base-600">{children}</div> : null}
+    </NCard>
   );
 }
 
@@ -100,7 +101,7 @@ export default async function ConfirmAppointmentPage({
         <p>
           Your appointment is confirmed for <strong>{details.whenLong}</strong>.
         </p>
-        <p className="mt-3 text-ink/60">{details.service} with {details.dentist}</p>
+        <p className="mt-3 text-base-500">{details.service} with {details.dentist}</p>
       </Notice>
     );
   }

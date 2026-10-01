@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import { NButton, NCard, NFieldError, NIcon, NLink } from "@/components/n";
+import { cn } from "@/lib/utils/cn";
 
 interface Slot {
   startsAt: string;
@@ -126,83 +127,89 @@ export function ReschedulePicker({ token }: { token: string }) {
 
   if (done) {
     return (
-      <div className="rounded-2xl border border-mint bg-white p-6 shadow-sm">
-        <h1 className="text-xl font-bold text-deep">You’re all set ✓</h1>
-        <p className="mt-2 text-sm text-ink/70">
+      <NCard className="items-start px-6 py-6 shadow-sm">
+        <span className="inline-flex size-11 items-center justify-center rounded-full bg-green-100 text-green-500">
+          <NIcon name="complete" weight="fill" className="size-6" />
+        </span>
+        <h1 className="text-xl font-bold text-base-900">You’re all set</h1>
+        <p className="text-sm text-base-600">
           Your appointment is confirmed for{" "}
-          <strong>
+          <strong className="text-base-900">
             {done.dayLabel} at {done.slot.label}
           </strong>
           . We’ve emailed you a confirmation.
         </p>
-      </div>
+      </NCard>
     );
   }
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-mint bg-white p-6 text-sm text-ink/60 shadow-sm">
-        Loading available times…
-      </div>
+      <NCard className="px-6 py-6 text-sm text-base-500 shadow-sm" aria-busy="true">
+        <span className="inline-flex items-center gap-2">
+          <NIcon name="refresh" className="size-4 animate-spin" />
+          Loading available times…
+        </span>
+      </NCard>
     );
   }
 
   if (loadError) {
     return (
-      <div className="rounded-2xl border border-mint bg-white p-6 shadow-sm">
-        <h1 className="text-xl font-bold text-deep">We hit a snag</h1>
-        <p className="mt-2 text-sm text-ink/70">{loadError}</p>
-        <button
-          type="button"
-          onClick={() => void load()}
-          className="mt-4 rounded-xl border border-mint px-4 py-2 text-sm font-semibold text-deep hover:bg-mint/40"
-        >
+      <NCard className="items-start px-6 py-6 shadow-sm">
+        <h1 className="text-xl font-bold text-base-900">We hit a snag</h1>
+        <p className="text-sm text-base-600">{loadError}</p>
+        <NButton color="secondary" variant="outline" onClick={() => void load()}>
+          <NIcon name="refresh" />
           Try again
-        </button>
-      </div>
+        </NButton>
+      </NCard>
     );
   }
 
   const active = days.find((d) => d.dayKey === activeDay);
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-2xl border border-mint bg-white p-6 shadow-sm">
-        <Link
+    <div className="flex flex-col gap-4">
+      <NCard className="gap-2 px-6 py-6 shadow-sm">
+        <NLink
           href={`/appointment/${token}`}
-          className="text-sm text-teal underline-offset-2 hover:underline"
+          className="inline-flex w-fit items-center gap-1.5 text-sm font-medium"
         >
-          ← Back
-        </Link>
-        <h1 className="mt-2 text-xl font-bold text-deep">Pick a new time</h1>
+          <NIcon name="back" className="size-4" />
+          Back
+        </NLink>
+        <h1 className="text-xl font-bold text-base-900">Pick a new time</h1>
         {summary ? (
-          <p className="mt-1 text-sm text-ink/60">
+          <p className="text-sm text-base-500">
             {summary.service} with {summary.dentistName} · {summary.locationCity}
             <br />
             Currently: {summary.currentLabel}
           </p>
         ) : null}
-      </div>
+      </NCard>
 
       {days.length === 0 ? (
-        <div className="rounded-2xl border border-mint bg-white p-6 text-sm text-ink/70 shadow-sm">
+        <NCard className="px-6 py-6 text-sm text-base-600 shadow-sm">
           No open times in the next few weeks. Please reply to your appointment
           email and we’ll find a slot for you.
-        </div>
+        </NCard>
       ) : (
-        <div className="rounded-2xl border border-mint bg-white p-4 shadow-sm">
+        <NCard className="gap-3 p-4 shadow-sm">
           {/* Day tabs */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          <div className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Day">
             {days.map((d) => (
               <button
                 key={d.dayKey}
                 type="button"
+                aria-pressed={d.dayKey === activeDay}
                 onClick={() => setActiveDay(d.dayKey)}
-                className={`whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
+                className={cn(
+                  "shrink-0 cursor-pointer whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-semibold transition-colors",
                   d.dayKey === activeDay
-                    ? "bg-deep text-cream"
-                    : "border border-mint text-ink hover:bg-mint/40"
-                }`}
+                    ? "border-accent-600 bg-accent-600 text-base-0"
+                    : "border-base-150 text-base-900 hover:bg-base-50",
+                )}
               >
                 {d.label}
               </button>
@@ -210,53 +217,44 @@ export function ReschedulePicker({ token }: { token: string }) {
           </div>
 
           {/* Time grid */}
-          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4" role="group" aria-label="Time">
             {active?.slots.map((s) => {
               const isSel = selected?.slot.startsAt === s.startsAt;
               return (
                 <button
                   key={s.startsAt}
                   type="button"
-                  onClick={() =>
-                    setSelected({ slot: s, dayLabel: active.label })
-                  }
-                  className={`rounded-lg px-2 py-2 text-sm font-medium transition-colors ${
+                  aria-pressed={isSel}
+                  onClick={() => setSelected({ slot: s, dayLabel: active.label })}
+                  className={cn(
+                    "cursor-pointer rounded-lg border px-2 py-2 text-sm font-medium tabular-nums transition-colors",
                     isSel
-                      ? "bg-deep text-cream"
-                      : "border border-mint text-ink hover:bg-mint/40"
-                  }`}
+                      ? "border-accent-500 bg-accent-500 text-base-0"
+                      : "border-base-150 text-base-900 hover:border-accent-150 hover:bg-accent-50",
+                  )}
                 >
                   {s.label}
                 </button>
               );
             })}
           </div>
-        </div>
+        </NCard>
       )}
 
-      {submitError ? (
-        <p role="alert" className="text-sm text-status-no_show">
-          {submitError}
-        </p>
-      ) : null}
+      {submitError ? <NFieldError>{submitError}</NFieldError> : null}
 
       {selected ? (
-        <div className="sticky bottom-4 rounded-2xl border border-mint bg-white p-4 shadow-lg">
-          <p className="text-sm text-ink/70">
+        <NCard className="sticky bottom-4 gap-3 p-4 shadow-lg">
+          <p className="text-sm text-base-600">
             New time:{" "}
-            <strong className="text-deep">
+            <strong className="text-base-900">
               {selected.dayLabel} at {selected.slot.label}
             </strong>
           </p>
-          <button
-            type="button"
-            onClick={submit}
-            disabled={submitting}
-            className="mt-3 w-full rounded-xl bg-deep px-5 py-3 text-sm font-semibold text-cream hover:opacity-90 disabled:opacity-50"
-          >
+          <NButton size="lg" block onClick={submit} disabled={submitting}>
             {submitting ? "Confirming…" : "Confirm this time"}
-          </button>
-        </div>
+          </NButton>
+        </NCard>
       ) : null}
     </div>
   );
